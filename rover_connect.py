@@ -1,14 +1,15 @@
-import traceback
-import pdb
-import re
-import time
 import datetime
 import json
+import random
+import re
+import time
+from abc import ABC
 from collections import namedtuple
+
 from sim800l import SIM800L
 
 
-class SmsTz(datetime.tzinfo):
+class SmsTz(datetime.tzinfo, ABC):
     hours = 0
     def __init__(self, h):
         self.hours = h
@@ -380,7 +381,7 @@ class RoverConnect(SIM800L):
 
         # если в ответ пришел текст, содержащий SIM PIN REQUIRED, значит, модему нужен пин-код
         if 'SIM PIN' in status:
-            self.send_pin_to_port(ser, pin)
+            self.send_pin_to_port(pin)
             self.str_send_bytes('AT+CMGD=%s\r' % (slot))
 
 
@@ -480,7 +481,7 @@ class RoverConnect(SIM800L):
                     i += 1
         return result
 
-    def getGsmLocations(self):
+    def getGsmLocations(self, keep_session):
         GSMCGNSInfo = namedtuple("GSMCGNSInfo", [ "latitude", "longitude", "positioning_accuracy" ])
         ip_address = self.connect_gprs(self.apn)
         if ip_address is False:
@@ -537,10 +538,10 @@ class RoverConnect(SIM800L):
                     while self.ser.inWaiting() > 0:
                         buf = self.ser.readline()
                         buf = buf.decode('gsm03.38', errors="ignore").strip()
-                    if buf != None:
+                    if buf is not None:
                         break 
             except KeyboardInterrupt:
-                if self.ser != None:
+                if self.ser is not None:
                     self.ser.close()
         return(buf)
 
@@ -560,20 +561,20 @@ class RoverConnect(SIM800L):
                     rc = self.command_ok('ATA')
                     split_result = buf.split(',')
                     phone_number = split_result[0].split(': ')[1].strip('"')
-                    break;
+                    break
             while True:
                 data = self.ser.readline()
                 buf = data.decode('gsm03.38', errors="ignore").strip()
-                if buf != None:
+                if buf is not None:
                     break 
                 time.sleep(1)
             
         except KeyboardInterrupt:
             rc = self.command_ok('ATH')
-            if self.ser != None:
+            if self.ser is not None:
                 self.ser.close()
         
-        return(phone_number)
+        return phone_number
 
 class Telemetry():
     def __init__(self, rover):
