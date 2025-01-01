@@ -1,8 +1,5 @@
-import traceback
-import pdb
 import json
-from sim800l import SIM800L
-from rover_connect import RoverConnect
+from rover_connect2.rover_connect import RoverConnect
 
 if __name__ == "__main__":
 #    pdb.set_trace()

@@ -1,14 +1,5 @@
-import traceback
-import pdb
-import re
-import time
-import datetime
-import json
-from collections import namedtuple
-from sim800l import SIM800L
-from rover_connect import SmsTz
-from rover_connect import RoverConnect
-from rover_connect import Telemetry
+from rover_connect2.rover_connect import RoverConnect
+from rover_connect2.rover_connect import Telemetry
 
 if __name__ == "__main__":
 #    pdb.set_trace()

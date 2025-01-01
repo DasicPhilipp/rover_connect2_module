@@ -1,9 +1,4 @@
-import traceback
-import pdb
-import serial
-import time
-from sim800l import SIM800L
-from rover_connect import RoverConnect
+from rover_connect2.rover_connect import RoverConnect
 
 rover = RoverConnect('/dev/ttyS0', 'internet.mts.ru')
 power_status = rover.power_current_status()
